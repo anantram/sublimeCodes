@@ -24,9 +24,7 @@ Input:
 
 7
 s
-
 (s,a,b,c,d,e,f)
-
 0,2,0,0,10,0,0
 0,0,3,0,0,0,0
 0,0,0,2,0,1,0
@@ -59,14 +57,16 @@ class Node {
 	int nodeDistance;
 	int position;
 	String shortestPath;
+	String parent;
 	boolean visited;
 
 	Node(String nodeName, int position) {
-		nodeDistance = 9999;
+		nodeDistance = 99999;
 		this.nodeName = nodeName;
 		shortestPath = "";
 		//visited = false;
 		this.position = position;
+		parent = "";
 	}
 }
 
@@ -85,8 +85,6 @@ class Dijktras {
 		PriorityQueue nodeQueue = new PriorityQueue(numberOfNodes,valueComparator);
 		nodeList = new Node[numberOfNodes];
 		pathArray = new int[numberOfNodes][numberOfNodes];
-
-		System.out.println(numberOfNodes);
 		startingNode = inputScanner.nextLine();
 		nodeNames = inputScanner.nextLine();
 		StringTokenizer tokens = new StringTokenizer(nodeNames,",()");
@@ -96,6 +94,7 @@ class Dijktras {
 			nodeList[tempCounter] = node;
 			if(nodeList[tempCounter].nodeName.equals(startingNode)) {
 				nodeList[tempCounter].nodeDistance = 0;
+				nodeList[tempCounter].parent = startingNode;
 				nodeQueue.add(node);
 			}
 			tempCounter++;
@@ -107,7 +106,7 @@ class Dijktras {
 			while(tokens.hasMoreTokens()) {
 				pathArray[i][tempCounter] = Integer.parseInt(tokens.nextToken());
 				if(pathArray[i][tempCounter] == 0)
-					pathArray[i][tempCounter] = 9999;
+					pathArray[i][tempCounter] = 99999;
 				tempCounter++;
 			}
 		}
@@ -118,22 +117,42 @@ class Dijktras {
 		Node temp = new Node("temp",0);
 		while (!nodeQueue.isEmpty()) {
 			temp = (Node) nodeQueue.poll();
-			//System.out.println(temp.nodeName + " : " + temp.nodeDistance);
-			//temp.visited = true;
-			//System.out.println(temp.nodeName);
+
 			for(int i = 0; i < numberOfNodes; i++) {
 				if (pathArray[i][temp.position] != 0 && !nodeList[i].visited) {
 					if((temp.nodeDistance + pathArray[temp.position][i]) < nodeList[i].nodeDistance){
 						nodeList[i].nodeDistance = (temp.nodeDistance + pathArray[temp.position][i]);
+						nodeList[i].parent = temp.nodeName;
+						nodeList[i].shortestPath = nodeList[i].nodeName;
+						
+						String end = nodeList[i].nodeName;
+						while(!end.equals(startingNode)) {
+							for(int j = 0; j < numberOfNodes; j++) {
+								if(nodeList[j].nodeName.equals(end)){
+									end = nodeList[j].parent;
+									nodeList[i].shortestPath = end + "->" + nodeList[i].shortestPath;
+									break;
+								}
+
+							}
+						}
+						
 						nodeQueue.add(nodeList[i]);
+						//System.out.println("node added is " + nodeList[i].nodeName);
+						
 					}		
 				}
-				System.out.println("loop ");
 			}
 
 		}
-		for(int i = 0; i < 7; i++)
-			System.out.println(nodeList[i].nodeName + " : " + nodeList[i].nodeDistance);
+		for(int i = 0; i < numberOfNodes; i++)
+			//System.out.println(nodeList[i].nodeName + " : " + nodeList[i].nodeDistance + "path " + nodeList[i].shortestPath);
+			if(nodeList[i].nodeDistance == 0)
+				System.out.println(startingNode + ":0 ");
+			else if(nodeList[i].nodeDistance == 99999)
+				System.out.println(startingNode + "->" + nodeList[i].nodeName + ":99999");
+			else
+				System.out.println(nodeList[i].shortestPath + ":" + nodeList[i].nodeDistance);
 	}
 
 	// Difining the comparator
