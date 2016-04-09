@@ -69,7 +69,7 @@ class Node {
 	}
 }
 
-class Dijktras {
+class bellmanford {
 	public static void main(String[] args) {
 		Scanner inputScanner = new Scanner(System.in);
 		int numberOfNodes;
@@ -114,6 +114,7 @@ class Dijktras {
 		// Taking inputs done
 		// Alogrithm starts
 		Node temp = new Node("temp",0);
+		
 		while (!nodeQueue.isEmpty()) {
 			temp = (Node) nodeQueue.poll();
 
@@ -141,6 +142,8 @@ class Dijktras {
 				}
 			}
 		}
+
+		
 		for(int i = 0; i < numberOfNodes; i++)
 			if(nodeList[i].nodeDistance == 0)
 				System.out.println(startingNode + ":0 ");

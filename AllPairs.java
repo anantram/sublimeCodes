@@ -57,19 +57,15 @@ class Node {
 	String nodeName;
 	int nodeDistance;
 	int position;
-	String shortestPath;
-	String parent;
 
 	Node(String nodeName, int position) {
 		nodeDistance = 99999;
 		this.nodeName = nodeName;
-		shortestPath = "";
 		this.position = position;
-		parent = "";
 	}
 }
 
-class Dijktras {
+class AllPairs {
 	public static void main(String[] args) {
 		Scanner inputScanner = new Scanner(System.in);
 		int numberOfNodes;
@@ -84,8 +80,9 @@ class Dijktras {
 		PriorityQueue nodeQueue = new PriorityQueue(numberOfNodes,valueComparator);
 		nodeList = new Node[numberOfNodes];
 		pathArray = new int[numberOfNodes][numberOfNodes];
-		startingNode = inputScanner.nextLine();
+		//startingNode = inputScanner.nextLine();
 		nodeNames = inputScanner.nextLine();
+
 		StringTokenizer tokens = new StringTokenizer(nodeNames,",()");
 		tempCounter = 0;
 		while(tokens.hasMoreTokens()) {
@@ -98,6 +95,7 @@ class Dijktras {
 			}
 			tempCounter++;
 		}
+		
 
 		for (int i = 0; i < numberOfNodes; i++) {
 			tokens = new StringTokenizer(inputScanner.nextLine(), ",");
