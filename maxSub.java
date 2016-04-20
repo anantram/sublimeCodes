@@ -16,16 +16,15 @@ class MaxSub {
 			temp = Integer.parseInt(token.nextToken());
 			mainArray.add(temp);
 		}
+
 		for(int start = 0; start < mainArray.size(); start++) {
 			subArray.clear();
 			sum = 0;
 			sum = mainArray.get(start);
 			subArray.add(mainArray.get(start));
-			//System.out.print("current " + mainArray.get(start) + " ");
 			for(int check = start + 1; check < mainArray.size(); check ++) {
 				subArray.add(mainArray.get(check));
 				sum = sum + mainArray.get(check);
-				//System.out.print(mainArray.get(check) + " ");
 			}
 
 			int growth = 0;
@@ -36,8 +35,11 @@ class MaxSub {
 				growth = growth + mainArray.get(reverse);
 				if(growth < 0) {
 					found = true;
-					reverseValue++;
-					//break;
+					//reverseValue++;
+					while(mainArray.get(reverse) < 0) {
+						reverse--;
+						reverseValue++;
+					}
 				}
 			}
 
