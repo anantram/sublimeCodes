@@ -48,6 +48,7 @@ class Node {
 	int frequency;
 	Node leftSmall;
 	Node rightlarge;
+	Node parent;
 
 	Node(String character, int frequency) {
 		this.character = character;
@@ -55,11 +56,12 @@ class Node {
 		path = new ArrayList<Boolean>();
 		leftSmall = null;
 		rightlarge = null;
+		parent = null;
 		isleft = false;
 	}
 }
 
-class Huffman {
+class Huffman2 {
 
 	public static Comparator<Node> valueComparator = new Comparator<Node>() {
 		
@@ -77,8 +79,6 @@ class Huffman {
 		inputReading();
 		while(queue.size() != 1)
 			mergeNode();
-		//for(int i = 0; i < nodeList.size(); i++)
-		//	System.out.println(nodeList.get(i).frequency);
 		Node tempRoot = new Node("",0);
 		tempRoot = (Node)queue.poll();
 		traverse(tempRoot);
@@ -101,11 +101,12 @@ class Huffman {
 		Node tempsmall = (Node)queue.poll();
 		Node templarge = (Node)queue.poll();
 		Node sumNode = new Node("",tempsmall.frequency + templarge.frequency);
-		System.out.println("node " + (tempsmall.frequency + templarge.frequency) + " created by " + tempsmall.frequency + " " + templarge.frequency);
 		sumNode.leftSmall = tempsmall;
 		tempsmall.isleft = false;
+		tempsmall.parent = sumNode;
 		sumNode.rightlarge = templarge;
 		templarge.isleft = true;
+		templarge.parent = sumNode;
 		nodeList.add(sumNode);
 		queue.add(sumNode);
 		
@@ -114,34 +115,15 @@ class Huffman {
 	public static void traverse(Node root) {
 		Stack traverse = new Stack();
 		ArrayList<Boolean> traversedPath = new ArrayList<Boolean>();
-		//traverse.push(root);
 		traverse.push(root.rightlarge);
-		System.out.println("new node pushed " + root.rightlarge.frequency);
 		traverse.push(root.leftSmall);
-		System.out.println("new node pushed " + root.leftSmall.frequency);	
-		System.out.println("new node pushed " + root.frequency);
-		boolean isLeafsChecked = false;
 		do {
 			Node temp = new Node("",0);
 			temp = (Node)traverse.pop();
-			System.out.println();
-			System.out.println("node poped " + temp.frequency);
-			System.out.print("current path ");
-			for(int tra = 0; tra < traversedPath.size(); tra++)
-				System.out.print(traversedPath.get(tra) + " ");
-			System.out.println();
 			traversedPath.add(temp.isleft);
-			System.out.println("new path added " + temp.isleft);
-			System.out.print("path to " + temp.frequency + " ");
-			for(int tra = 0; tra < traversedPath.size(); tra++)
-				System.out.print(traversedPath.get(tra) + " ");
-			System.out.println();
-
 			if(temp.leftSmall != null) {
 				traverse.push(temp.rightlarge);
-				System.out.println("new node pushed " + temp.rightlarge.frequency);
 				traverse.push(temp.leftSmall);
-				System.out.println("new node pushed " + temp.leftSmall.frequency);		
 			}
 			else {
 
@@ -152,26 +134,23 @@ class Huffman {
 					else
 						System.out.print("0");
 				System.out.println();
-				traversedPath.remove((traversedPath.size() - 1));
-
-				if(!isLeafsChecked) {
-					System.out.println("leaf not checked");
-					isLeafsChecked = true;
+				if(temp.isleft) {
+					while(temp.isleft) {
+						if(traversedPath.size() >= 1) {
+							traversedPath.remove((traversedPath.size() - 1));
+							if(temp.parent != null)
+								temp = temp.parent;
+						}
+						else {
+							break;
+						}
+					}
+					if(traversedPath.size() >= 1)
+						traversedPath.remove((traversedPath.size() - 1));
 				}
-				else {
-					System.out.println("leaf checked");
-					isLeafsChecked = false;
-				}
-
-				if(!isLeafsChecked) {
-				 	traversedPath.remove((traversedPath.size() - 1));
-				//  	traversedPath.remove((traversedPath.size() - 1));
-				 }
-
+				else
+					traversedPath.remove((traversedPath.size() - 1));	
 			}
-			
 		}while(!traverse.isEmpty());
 	}
-
-
 }
